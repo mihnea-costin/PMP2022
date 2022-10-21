@@ -38,3 +38,4 @@ print(p_incendiu)
 
 #4) calculati cele 2 probabilitati folosind regula lui Bayes
 
+
