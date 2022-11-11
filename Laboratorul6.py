@@ -94,3 +94,4 @@ print(posterior_g)
 # preună cu regiunea 97%HPD pentru acestea (1pt pentru fiecare caz, cu deadline-urile respective: sfârşitul
 # seminarului şi luni, 7.11.2022).
 
+
