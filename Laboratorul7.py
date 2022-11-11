@@ -35,21 +35,20 @@ if __name__ == "__main__":
     prices_of_pcs = pm.Model()
 
     with prices_of_pcs:
-        alpha = pm.Normal('a', mu=0, sd=100)
-        beta1 = pm.Normal('beta1', mu=0, sd=100)
-        beta2 = pm.Normal('beta2', mu=0, sd=10)
-        gamma = pm.Normal('gamma', mu=0, sd=100)
-        sigma = pm.HalfNormal('sigma', sd=10)
-        
-        mu = alpha + beta1 * speed + beta2 * hardDrive + gamma * premium
+        alpha = pm.Normal('a', mu=0, sd=10)
+        beta1 = pm.Normal('beta1', mu=0, sd=10)
+        beta2 = pm.Normal('beta2', mu=0, sd=5)
+        sigma = pm.HalfNormal('sigma', sd=1)
+        # bonus si pentru premium analizat
+        mu = alpha + beta1 * speed + beta2 * hardDrive
         price_like = pm.Normal('price_like', mu=mu, sd=sigma, observed=price)
         trace = pm.sample(20000, tune=20000, cores=4)
         ppc = pm.sample_posterior_predictive(trace, samples=100, model=prices_of_pcs)
 
-        az.plot_trace(trace)
-        plt.savefig('trace.png')
+        az.plot_trace(ppc)
+        plt.savefig('ppc.png')
         plt.show()
 
 # 2. Obţineţi estimări de 95% pentru HDI ale parametrilor β1 şi β2. (3pt)
-    # plt.posterior(trace, var_names=['a', 'beta1', 'beta2', 'gamma', 'sigma'])
+    plt.posterior(trace, var_names=['a', 'beta1', 'beta2', 'gamma', 'sigma'])
 
