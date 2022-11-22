@@ -51,4 +51,20 @@ if __name__ == "__main__":
 
 # 2. Obţineţi estimări de 95% pentru HDI ale parametrilor β1 şi β2. (3pt)
     plt.posterior(trace, var_names=['a', 'beta1', 'beta2', 'gamma', 'sigma'])
+    
 
+# 3. Pe baza rezultatelor obţinute, sunt frecvenţa procesorului şi mărimea hard diskului predictori utili ai
+# preţului de vânzare?
+
+    # Conform rezultatelor obtinute, frecventa procesorului si marimea hard diskului sunt predictori utili ai 
+    # pretului de vanzare deoarece aceste date se reflectă în performanțele produsului, ceea ce conferă un preț mai mare.
+
+# 4.Să presupunem acum că un consumator este interesat de un computer cu o frecvenţă de 33 MHz şi un
+# hard disk de 540 MB. Simulaţi 5000 de extrageri din preţul de vânzare aşteptat (μ) şi construiţi un interval de
+# 90% HDI pentru acest preţ.
+
+
+
+# 5.În schimb, să presupunem că acest consumator doreşte să prezică preţul de vânzare al unui computer cu
+# această frecvenţă şi mărime a hard disk-ului. Simulaţi 5000 de extrageri din distribuţia predictivă posterioară
+# şi utilizaţi aceste extrageri simulate pentru a găsi un interval de predicţie de 90% HDI.
