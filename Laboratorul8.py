@@ -42,21 +42,22 @@ plt.show()
 # 3. Să presupunem că un student are un scor GRE de 550 şi un GPA de 3.5. Construiţi un interval de 90%
 # HDI pentru probabilitatea ca acest student să fie admis.
 
-def student_admission_prob(alpha, beta, gre, gpa):
-    gre = 550
-    gpa = 3.5
-    stud_admission_prb_hdi = az.plot
-    return logistic(alpha + beta[0] * gre + beta[1] * gpa)
+gre = 550
+gpa = 3.5
+student_admission_prb_1 = logistic(alpha + beta[0] * gre + beta[1] * gpa)
+stud_admission_prb_hdi_1 = az.hdi(student_admission_prb, hdi_prob=0.90)
+print(stud_admission_prb_hdi_1)
 
 # 4. 
-
-# az.style.use('arviz-darkgrid')
-# z = np.linspace(-8, 8)
-# plt.plot(z, 1 / (1 + np.exp(-z)))
-# plt.xlabel('z')
-# plt.ylabel('logistic(z)')
-# plt.show()
 
 # 4. Dar dacă studentul are un scor GRE de 500 şi un GPA de 3.2? (refaceţi exerciţiul anterior cu aceste date)
 # Cum justificaţi diferenţa?
 
+gre = 500
+gpa = 3.2
+student_admission_prb_2 = logistic(alpha + beta[0] * gre + beta[1] * gpa)
+stud_admission_prb_hdi_2 = az.hdi(student_admission_prb, hdi_prob=0.90)
+print(stud_admission_prb_hdi_2)
+
+# Aceasta diferenta se justifica datorita studentul are probabilitate mai mare de admitere daca are scor GRE mai mare si GPA mai mare
+# deci din acest motiv rezultatul este mai mare in primul caz.
