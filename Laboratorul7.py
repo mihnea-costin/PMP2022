@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
 # 2. Obţineţi estimări de 95% pentru HDI ale parametrilor β1 şi β2. (3pt)
     plt.posterior(trace, var_names=['a', 'beta1', 'beta2', 'gamma', 'sigma'])
-    
+
 
 # 3. Pe baza rezultatelor obţinute, sunt frecvenţa procesorului şi mărimea hard diskului predictori utili ai
 # preţului de vânzare?
