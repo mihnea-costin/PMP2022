@@ -9,9 +9,9 @@ az.style.use('arviz-darkgrid')
 # Pe modelul polinomial din curs, în codul care generează datele (din fişierul date.csv ), schimbaţi
 # order=2 cu o altă valoare, de exemplu order=5.
 
-data1 = np.loadtxt("C:\\Users\\mihne\\Desktop\\PMP2022\\date.csv")
-x_1 = data1[:, 0]
-y_1 = data1[:, 1]
+data3 = np.loadtxt("C:\\Users\\mihne\\Desktop\\PMP2022\\date.csv")
+x_1 = data3[:, 0]
+y_1 = data3[:, 1]
 order = 5
 x_1p = np.vstack([x_1**i for i in range(1, order+1)])
 x_1s = (x_1p - x_1p.mean(axis=1, keepdims=True))
@@ -91,9 +91,9 @@ plt.savefig('C:\\Users\\mihne\\Desktop\\PMP2022\\model_p3.png')
 # Pe modelul polinomial din curs, în codul care generează datele (din fişierul date.csv ), schimbaţi
 # order=2 cu o altă valoare, de exemplu order=5.
 
-data1 = np.loadtxt("C:\\Users\\mihne\\Desktop\\PMP2022\\date2.csv")
-x_1 = data1[:, 0]
-y_1 = data1[:, 1]
+data3 = np.loadtxt("C:\\Users\\mihne\\Desktop\\PMP2022\\date2.csv")
+x_1 = data3[:, 0]
+y_1 = data3[:, 1]
 order = 5
 x_1p = np.vstack([x_1**i for i in range(1, order+1)])
 x_1s = (x_1p - x_1p.mean(axis=1, keepdims=True))
@@ -173,10 +173,10 @@ plt.savefig('C:\\Users\\mihne\\Desktop\\PMP2022\\model_p3.png')
 # 3. Faceţi inferenţa cu un model cubic (order=3 ), calculaţi WAIC şi LOO, reprezentaţi grafic rezultatele
 # şi comparaţi-le cu modelele liniare şi pătratice. (3pt)
 
-data2 = np.loadtxt("C:\\Users\\mihne\\Desktop\\PMP2022\\date.csv")
-x_1 = data2[:, 0]
-y_1 = data2[:, 1]
-order = 3
+data3 = np.loadtxt("C:\\Users\\mihne\\Desktop\\PMP2022\\date2.csv")
+x_1 = data3[:, 0]
+y_1 = data3[:, 1]
+order = 5
 x_1p = np.vstack([x_1**i for i in range(1, order+1)])
 x_1s = (x_1p - x_1p.mean(axis=1, keepdims=True))
 x_1p.std(axis=1, keepdims=True)
@@ -184,6 +184,7 @@ y_1s = (y_1 - y_1.mean()) / y_1.std()
 plt.scatter(x_1s[0], y_1s)
 plt.xlabel('x')
 plt.ylabel('y')
+plt.show()
 
 with pm.Model() as model_l:
     α = pm.Normal('α', mu=0, sd=1)
@@ -196,5 +197,8 @@ with pm.Model() as model_l:
 # calculam WAIC si LOO
 waic_l = az.waic(idata_l, scale="deviance")
 loo_l = az.loo_pit(idata_l, scale="deviance")
+az.show_models(idata_l, scale="deviance")
 
+# reprezentam grafic rezultatele si comparam cu modelele liniare si patratice
 cmp_df = az.compare({'model_l':idata_l, 'model_p':idata_p},method='BB-pseudo-BMA', ic="waic", scale="deviance")
+az.plot_compare(cmp_df, insample_dev=False, plot_ic_diff=True, figsize=(35, 1))
