@@ -1,16 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import pydotplus as pydot
 
 # 1. (1pt) Folosiţi metoda grid computing cu alte distribuţii a priori ca cea din curs.
 def posterior_grid(grid_points=50, heads=6, tails=9):
-    """
-    A grid implementation for the coin-flipping problem
-    """
     grid = np.linspace(0, 1, grid_points)
-    prior = np.repeat(1/grid_points, grid_points) # uniform prior
-    prior = (grid<= 0.5).astype(int)
-    # prior = abs(grid - 0.5)
+    # prior = (grid<= 0.5).astype(int)
+    prior = abs(grid - 0.5)
     likelihood = stats.binom.pmf(heads, heads+tails, grid)
     posterior = likelihood * prior
     posterior /= posterior.sum()
@@ -43,13 +40,23 @@ def function(N):
     plt.legend(loc=1, frameon=True, framealpha=0.9)
     return error
 
-# print(function(10000))
+# print(function(100))
+# print(function(1000))
+# print(function(10))
+
+# Cu atat numarul N de puncte este mai mare, cu atat eroarea este mai mica
+
+# media si deviatia standard a erorii
+mean_of_error = np.mean(function(1000))
+std_of_error = np.std(function(1000))
+plt.errorbar(10, mean_of_error, yerr=std_of_error, fmt='o')
+# vizualizarea rezultatelor
+# plt.show()
 
 # 3. (2pt) Modificaţi argumentul func din funcţia metropolis din curs folosind parametrii distribuţiei a
 # priori din Cursul 2 (pentru modelul beta-binomial) şi comparaţi cu metoda grid computing.
 
-def metropolis(func, draws=10000):
-    """A very simple Metropolis implementation"""
+def metropolis(func = [(1, 1), (20, 20), (1, 4)], draws=10000):
     trace = np.zeros(draws)
     old_x = 0.5 # func.mean()
     old_prob = func.pdf(old_x)
@@ -65,3 +72,5 @@ def metropolis(func, draws=10000):
         else:
             trace[i] = old_x
     return trace
+
+# Comparativ cu metoda grid computing, metoda metropolis este mai rapida, dar are o eroare mai mare
