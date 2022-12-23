@@ -51,7 +51,7 @@ mean_of_error = np.mean(function(1000))
 std_of_error = np.std(function(1000))
 plt.errorbar(10, mean_of_error, yerr=std_of_error, fmt='o')
 # vizualizarea rezultatelor
-# plt.show()
+plt.show()
 
 # 3. (2pt) Modificaţi argumentul func din funcţia metropolis din curs folosind parametrii distribuţiei a
 # priori din Cursul 2 (pentru modelul beta-binomial) şi comparaţi cu metoda grid computing.
@@ -72,5 +72,8 @@ def metropolis(func = [(1, 1), (20, 20), (1, 4)], draws=10000):
         else:
             trace[i] = old_x
     return trace
+
+print(metropolis())
+print(posterior_grid())
 
 # Comparativ cu metoda grid computing, metoda metropolis este mai rapida, dar are o eroare mai mare
