@@ -43,12 +43,12 @@ az.plot_posterior(idata_ncm, var_names=['a'], ref_val=0, rope=[-1, 1], kind='his
 # 2. Folosiţi ArviZ pentru a compara cele două modele, după criteriile Rˆ (Rhat) şi autocorelaţie. Concentraţi-
 # vă pe parametrii mu şi tau 
 
-# rhat comparation using mu and tau
+# rhat
 
 rhat_centered = az.summary(idata_cm, var_names=['a'])
 rhat_centered = az.summary(idata_ncm, var_names=['a'])
 
-# autocorrelation comparation
+# autocorelare
 
 autocorrelation_centered = az.autocorrplot(idata_cm, var_names=['b'])
 autocorrelation_non_centered = az.autocorrplot(idata_ncm, var_names=['b'])
