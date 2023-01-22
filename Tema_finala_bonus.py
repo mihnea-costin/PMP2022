@@ -105,3 +105,4 @@ az.plot_posterior(trace, var_names=['alpha', 'beta', 'verosimilitate', 'sigma', 
 
 az.plot_forest(trace, var_names=['alpha', 'beta', 'verosimilitate', 'sigma', 'epsilon'])
 
+
