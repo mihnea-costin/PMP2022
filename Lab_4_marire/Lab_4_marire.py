@@ -1,58 +1,34 @@
-# Lab. 4: Modele probabiliste. Presupunem că numărul 𝑛 de clienţi care intră într-o anumită oră într-un
-# magazin umează o distribuţie Poisson de parametru 𝜆 = 20 clienţi. Numărul 𝑌 de clienţi care fac cumpărături
-# e distribuit Binomial(𝑛, 𝜃), unde 𝜃 este probabilitatea ca un client să cumpere din magazin.
-# Să presupunem că un client petrece în magazin un timp distribuit exponenţial cu medie de 𝛼 minute dacă
-# nu face cumpărături, respectiv 𝛼 + 1 minute dacă face cumpărături.
-
-
-# c. (2pt.) Pentru 𝛼 găsit mai sus, care este timpul total petrecut în magazin de toţi clienţii?
-import pymc3 as pm
 import numpy as np
+import pymc3 as pm
 
 # a. (2pt.) Definiţi modelul probabilist (folosind eventual PyMC3 - dar nu obligatoriu, neexistând variabile
 # observate) care sa descrie contextul de mai sus.
 
-# Valoarea lui theta aleasa in prealabil
-theta = 0.5
+n = 1000
+theta = 0.2
+lmbda = 20
 
-# Definim modelul probabilistic
+def time_spent_in_store(x):
+    return (x >= 15)
+
 with pm.Model() as model:
-    # Variabila aleatoare pentru numarul de clienti intr-o ora
-    n = pm.Poisson('n', mu=20)
-    
-    # Variabila aleatoare pentru probabilitatea de a face cumparaturi
-    theta = pm.Beta('theta', alpha=1, beta=1, testval=theta)
-    
-    # Variabila aleatoare pentru numarul de clienti care fac cumparaturi
-    y = pm.Binomial('y', n=n, p=theta)
-    
-    # Variabile aleatoare pentru timpul petrecut in magazin
-    alpha = pm.Exponential('alpha', lam=1)
-    beta = pm.Exponential('beta', lam=1+1)
-    
-    # Functie pentru calculul timpului total petrecut in magazin
-    @pm.deterministic
-    def total_time(y=y, alpha=alpha, beta=beta):
-        return (n - y) * alpha + y * beta
-    
-    # Restrictia de timp pentru clientii care nu cumpara
-    max_time = 15
-    
-    # Determinam alfa maxim astfel incat toti clientii care nu cumpara sa nu stea in magazin mai mult de 15 minute, cu o probabilitate de 95%
-    alpha_max = pm.find_MAP(vars=[alpha], fmin=pm.find_MAP, 
-                            start={'alpha': 1}, 
-                            f=lambda x: np.abs(pm.Exponential.dist(lam=x).ppf(0.95) - max_time),
-                            progressbar=False)['alpha']
-    
-    # Generam 1000 de esantioane din distributia noastra
-    trace = pm.sample(1000, tune=1000)
-    
-# Extragere cuantile din distributia timpului total petrecut in magazin
-q = pm.quantiles(trace['total_time'], q=[0.95])
+    alpha = pm.Uniform("alpha", lower=0, upper=30)
+    n_customers = pm.Poisson("n_customers", mu=lmbda)
+    purchase = pm.Binomial("purchase", n=n_customers, p=theta)
+    time_no_purchase = pm.Exponential("time_no_purchase", lam=1/alpha, shape=n_customers)
+    time_purchase = pm.Exponential("time_purchase", lam=1/(alpha+1), shape=purchase)
 
-# Verificare conditie
-if q[0.95] <= max_time:
-    print(f"Valoarea maxima pentru alpha este {alpha_max:.2f} minute")
-else:
-    print("Nu exista o valoare maxima pentru alpha astfel incat toti clientii care nu cumpara sa nu stea in magazin mai mult de 15 minute, cu o probabilitate de 95%")
+    time_spent = pm.math.concatenate([time_no_purchase, time_purchase])
+    spent_in_store = pm.Deterministic("spent_in_store", time_spent_in_store(time_spent))
 
+    trace = pm.sample(5000, tune=1000, target_accept=0.9, random_seed=42)
+
+# b. (3pt.) Pentru valori ale lui 𝜃 alese în prealabil (de exemplu, 𝜃 = 0.2 sau 0.5), determinaţi care este (cu
+# aproximaţie) 𝛼 maxim pentru ca toţi acei clienţi care nu cumpără să nu stea în magazin mai mult de
+# 15 minute, cu o probabilitate de 95%.
+
+time_no_purchase_trace = trace["time_no_purchase"].flatten()
+time_no_purchase_trace_95 = np.percentile(time_no_purchase_trace, 95)
+
+alpha_max = 1 / np.percentile(time_no_purchase_trace, 95)
+print("α maxim pentru probabilitatea de 95% ca un client care nu cumpără să nu stea mai mult de 15 minute este: ", alpha_max)
